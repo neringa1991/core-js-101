@@ -18,9 +18,10 @@
  *   '',  'bb'  => 'bb'
  */
 function concatenateStrings(value1, value2) {
-  value1.concat(value2);
+  return value1.concat(value2);
 }
 concatenateStrings();
+
 /**
  * Returns the length of given string.
  *
