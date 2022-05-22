@@ -198,8 +198,12 @@ function extractEmails(str) {
  *             '└──────────┘\n'
  *
  */
-function getRectangleString(/* width, height */) {
-  throw new Error('Not implemented');
+function getRectangleString(width, height) {
+  const topLine = `┌${'─'.repeat(width - 2)}┐\n`;
+  const middleLine = `│${' '.repeat(width - 2)}│\n`;
+  const lastLine = `└${'─'.repeat(width - 2)}┘\n`;
+
+  return `${topLine}${middleLine.repeat(height - 2)}${lastLine}`;
 }
 
 /**
@@ -289,8 +293,75 @@ function isString(value) {
  *   'Q♠' => 50
  *   'K♠' => 51
  */
-function getCardId(/* value */) {
-  throw new Error('Not implemented');
+function getCardId(value) {
+  let cartIndex;
+  const newValue = value.replace(/^\D+/g, '');
+
+  if (value.includes('♣')) {
+    if (newValue.length === 0) {
+      if (value.charCodeAt(0) - 65 === 0) {
+        cartIndex = value.charCodeAt(0) - 65;
+      } else if (value.charCodeAt(0) - 65 === 9) {
+        cartIndex = 10;
+      } else if (value.charCodeAt(0) - 65 === 10) {
+        cartIndex = 12;
+      } else if (value.charCodeAt(0) - 65 === 16) {
+        cartIndex = 11;
+      }
+    }
+    if (newValue.length === 2 || newValue.length === 3) {
+      cartIndex = parseInt(value, 10) - 1;
+    }
+  }
+  if (value.includes('♦')) {
+    if (newValue.length === 0) {
+      if (value.charCodeAt(0) - 65 === 0) {
+        cartIndex = value.charCodeAt(0) - 65 + 13;
+      } else if (value.charCodeAt(0) - 65 === 9) {
+        cartIndex = 23;
+      } else if (value.charCodeAt(0) - 65 === 10) {
+        cartIndex = 25;
+      } else if (value.charCodeAt(0) - 65 === 16) {
+        cartIndex = 24;
+      }
+    }
+    if (newValue.length === 2 || newValue.length === 3) {
+      cartIndex = parseInt(value, 10) + 12;
+    }
+  }
+  if (value.includes('♥')) {
+    if (newValue.length === 0) {
+      if (value.charCodeAt(0) - 65 === 0) {
+        cartIndex = value.charCodeAt(0) - 65 + 26;
+      } else if (value.charCodeAt(0) - 65 === 9) {
+        cartIndex = 36;
+      } else if (value.charCodeAt(0) - 65 === 10) {
+        cartIndex = 38;
+      } else if (value.charCodeAt(0) - 65 === 16) {
+        cartIndex = 37;
+      }
+    }
+    if (newValue.length === 2 || newValue.length === 3) {
+      cartIndex = parseInt(value, 10) + 25;
+    }
+  }
+  if (value.includes('♠')) {
+    if (newValue.length === 0) {
+      if (value.charCodeAt(0) - 65 === 0) {
+        cartIndex = value.charCodeAt(0) - 65 + 39;
+      } else if (value.charCodeAt(0) - 65 === 9) {
+        cartIndex = 49;
+      } else if (value.charCodeAt(0) - 65 === 10) {
+        cartIndex = 51;
+      } else if (value.charCodeAt(0) - 65 === 16) {
+        cartIndex = 50;
+      }
+    }
+    if (newValue.length === 2 || newValue.length === 3) {
+      cartIndex = parseInt(value, 10) + 38;
+    }
+  }
+  return cartIndex;
 }
 
 module.exports = {

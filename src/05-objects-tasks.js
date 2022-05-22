@@ -52,8 +52,11 @@ function getJSON(obj) {
  *    const r = fromJSON(Circle.prototype, '{"radius":10}');
  *
  */
-function fromJSON(/* proto, json */) {
-  throw new Error('Not implemented');
+function fromJSON(proto, json) {
+  const object = JSON.parse(json);
+  const values = Object.values(object);
+
+  return new proto.constructor(...values);
 }
 
 /**
@@ -111,32 +114,94 @@ function fromJSON(/* proto, json */) {
  */
 
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  result: '',
+  order: [],
+  errorText1:
+    'Element, id and pseudo-element should not occur more then one time inside the selector',
+  errorText2:
+    'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
+
+  element(value) {
+    const obj = Object.create(this);
+    obj.order = this.order.concat(0);
+    this.checkOrder(obj.order);
+    this.checkValid(obj.order);
+    obj.result = this.result + value;
+    return obj;
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    const obj = Object.create(this);
+    obj.order = this.order.concat(1);
+    this.checkOrder(obj.order);
+    this.checkValid(obj.order);
+    obj.result = `${this.result}#${value}`;
+    return obj;
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    const obj = Object.create(this);
+    obj.order = this.order.concat(2);
+    this.checkOrder(obj.order);
+    this.checkValid(obj.order);
+    obj.result = `${this.result}.${value}`;
+    return obj;
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    const obj = Object.create(this);
+    obj.order = this.order.concat(3);
+    this.checkOrder(obj.order);
+    this.checkValid(obj.order);
+    obj.result = `${this.result}[${value}]`;
+    return obj;
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    const obj = Object.create(this);
+    obj.order = this.order.concat(4);
+    this.checkOrder(obj.order);
+    this.checkValid(obj.order);
+    obj.result = `${this.result}:${value}`;
+    return obj;
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    const obj = Object.create(this);
+    obj.order = this.order.concat(5);
+    this.checkOrder(obj.order);
+    this.checkValid(obj.order);
+    obj.result = `${this.result}::${value}`;
+    return obj;
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  combine(selector1, combinator, selector2) {
+    const obj = Object.create(this);
+    obj.result = `${selector1.result} ${combinator} ${selector2.result}`;
+    return obj;
+  },
+
+  stringify() {
+    return this.result;
+  },
+
+  checkOrder(order) {
+    const copy = Array(order.length)
+      .fill()
+      .map((_, i) => order[i]);
+    copy.sort((a, b) => a - b);
+    if (!copy.every((e, i) => e === order[i])) this.error(this.errorText2);
+  },
+
+  checkValid(order) {
+    const index = order
+      .filter((e) => e < 2 || e > 4)
+      .findIndex((e, i, a) => a.indexOf(e) !== i);
+    if (index >= 0) this.error(this.errorText1);
+  },
+
+  error(error) {
+    throw new Error(error);
   },
 };
 

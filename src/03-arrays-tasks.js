@@ -560,8 +560,18 @@ function distinct(arr) {
  *    "Poland" => ["Lodz"]
  *   }
  */
-function group(/* array, keySelector, valueSelector */) {
-  throw new Error('Not implemented');
+function group(array, keySelector, valueSelector) {
+  const map = new Map();
+
+  array.map((element) => {
+    const key = keySelector(element);
+    if (map.has(key)) {
+      return map.get(key).push(valueSelector(element));
+    }
+    return map.set(key, [valueSelector(element)]);
+  });
+
+  return map;
 }
 
 /**
@@ -622,8 +632,25 @@ function getElementByIndexes(arr, indexes) {
  *   [ 1, 2, 3, 4, 5, 6, 7, 8 ]   =>  [ 5, 6, 7, 8, 1, 2, 3, 4 ]
  *
  */
-function swapHeadAndTail(/* arr */) {
-  throw new Error('Not implemented');
+function swapHeadAndTail(arr) {
+  let newArray = [];
+  let newArray2 = [];
+  let additionalArray = [];
+
+  if (arr.length % 2 === 0) {
+    newArray = arr.splice(arr.length / 2, arr.length / 2);
+    newArray2 = newArray.concat(arr);
+    return newArray2;
+  }
+  if (arr.length % 2 !== 0) {
+    const newIndex = arr.length + 1;
+    const lastIndex = arr.length - 1;
+    newArray = arr.splice(newIndex / 2, lastIndex / 2);
+    additionalArray = arr.splice(0, arr.length - 1);
+    newArray2 = newArray.concat(arr, additionalArray);
+    return newArray2;
+  }
+  return newArray2;
 }
 
 module.exports = {
